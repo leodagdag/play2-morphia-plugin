@@ -1,5 +1,6 @@
 import sbt._
 import Keys._
+import com.typesafe.sbteclipse.plugin.EclipsePlugin._
 
 object Play2MorphiaPluginBuild extends Build {
 
@@ -21,9 +22,10 @@ object Play2MorphiaPluginBuild extends Build {
   ).settings(com.typesafe.sbtscalariform.ScalariformPlugin.defaultScalariformSettings: _*)
 
   object Resolvers {
-    val githubRepository =  Resolver.file("Local Github Repository", file(Path.userHome +"/dev/leodagdag.github.com/repository"))(Resolver.mavenStylePatterns)
+    val githubRepository =  Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.mavenStylePatterns)
+    val dropboxRepository =  Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)(Resolver.mavenStylePatterns)
     val typesafeRepository = "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
-    val morphiaRepository = "Morphia repository" at "http://morphia.googlecode.com/svn/mavenrepo/"
+    val morphiaRepository = "Morphia Repository" at "http://morphia.googlecode.com/svn/mavenrepo/"
   }
 
   object Dependencies {
@@ -33,13 +35,19 @@ object Play2MorphiaPluginBuild extends Build {
         "com.google.code.morphia"    % "morphia-validation"    % "0.99",
         "cglib"                      % "cglib-nodep"           % "[2.1_3,)",
         "com.thoughtworks.proxytoys" % "proxytoys"             % "1.0",
-        "play"                       %% "play"                 % "2.0-RC3" % "provided" notTransitive()
+        "play"                       %% "play"                 % "2.0-RC3" % "provided" notTransitive(),
+        ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" notTransitive())
+          .exclude("org.springframework", "spring-asm")
+          .exclude("commons-logging", "commons-logging"),
+        ("org.springframework"       % "spring-beans"          % "3.0.7.RELEASE" notTransitive())
+          .exclude("org.springframework", "spring-core"),
+        "commons-lang"               % "commons-lang"          %   "2.6"
       )
   }
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.1"
+    val buildVersion      = "0.0.2"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.2"
     val buildSettings = Defaults.defaultSettings ++ Seq (
@@ -49,4 +57,7 @@ object Play2MorphiaPluginBuild extends Build {
     )
   }
 
+  object EclipsePlugin {
+    EclipseKeys.withSource := true
+  }
 }
