@@ -58,6 +58,7 @@ object Play2MorphiaPluginBuild extends Build {
   }
 
   object EclipsePlugin {
+    EclipseKeys.executionEnvironment := Some(EclipseExecutionEnvironment.JavaSE16)
     EclipseKeys.withSource := true
   }
 }
