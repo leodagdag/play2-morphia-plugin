@@ -1,14 +1,18 @@
 package leodagdag.play2morphia;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import leodagdag.play2morphia.utils.ConfigKey;
 import leodagdag.play2morphia.utils.MorphiaLogger;
 
-import play.Configuration;
+import org.apache.commons.lang.StringUtils;
+
 import play.Application;
-import play.Logger;
+import play.Configuration;
 import play.Plugin;
 
 import com.google.code.morphia.Datastore;
@@ -19,15 +23,16 @@ import com.google.code.morphia.validation.MorphiaValidation;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
+import com.mongodb.ServerAddress;
 import com.mongodb.gridfs.GridFS;
 
 public class MorphiaPlugin extends Plugin {
 
-	public static final String VERSION = "0.0.1";
+	public static final String VERSION = "0.0.2";
 
-	private static Mongo _mongo = null;
-	private static Morphia _morphia = null;
-	private static Datastore _ds = null;
+	private static Mongo mongo = null;
+	private static Morphia morphia = null;
+	private static Datastore ds = null;
 	private final Application application;
 	private static GridFS gridfs;
 
@@ -43,34 +48,41 @@ public class MorphiaPlugin extends Plugin {
 		MorphiaLoggerFactory.registerLogger(SLF4JLogrImplFactory.class);
 
 		try {
-			// TODO read config from application.conf
-			Configuration morphiaConf = Configuration.root().getConfig("morphia");
-			if (morphiaConf != null) {
-				for (String key : morphiaConf.keys()) {
-					MorphiaLogger.debug("Key: %s", key);
-				}
+			Configuration morphiaConf = Configuration.root().getConfig(ConfigKey.PREFIX);
+			if (morphiaConf == null) {
+				throw Configuration.root().reportError(ConfigKey.PREFIX, "Missing Morphia configuration", null);
 			}
+			
+			MorphiaLogger.debug(morphiaConf);
+			
+			String dbName = morphiaConf.getString(ConfigKey.DB_NAME.getKey());
+			if (StringUtils.isBlank(dbName)) {
+				throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing Morphia configuration", null);
+			}
+			
 			// Connect to MongoDB
-			_mongo = new Mongo();
-			_morphia = new Morphia();
-			// Configure validation
+			String seeds = morphiaConf.getString(ConfigKey.DB_SEEDS.getKey());
+			if (StringUtils.isNotBlank(seeds)) {
+				mongo = connect(seeds);
+			} else {
+				mongo = connect(morphiaConf.getString(ConfigKey.DB_HOST.getKey()), morphiaConf.getString(ConfigKey.DB_PORT.getKey()));
+			}
+			
+			morphia = new Morphia();
+			// Configure validatior
 			MorphiaValidation morphiaValidation = new MorphiaValidation();
-			morphiaValidation.applyTo(_morphia);
+			morphiaValidation.applyTo(morphia);
 			// Create datastore
-			_ds = _morphia.createDatastore(_mongo, "persistance");
+			ds = morphia.createDatastore(mongo, dbName);
 			// Register all models.Class
 			Set<String> classes = new HashSet<String>();
 			classes.addAll(application.getTypesAnnotatedWith("models", com.google.code.morphia.annotations.Entity.class));
 			classes.addAll(application.getTypesAnnotatedWith("models", com.google.code.morphia.annotations.Embedded.class));
 			for (String clazz : classes) {
 				MorphiaLogger.debug("mapping class: %1$s", clazz);
-				_morphia.map(Class.forName(clazz, true, application.classloader()));
+				morphia.map(Class.forName(clazz, true, application.classloader()));
 			}
 			MorphiaLogger.debug("End of initalize Morphia", "");
-
-		} catch (UnknownHostException e) {
-			MorphiaLogger.error("Problem connecting MongoDB", e);
-			throw new RuntimeException(e);
 		} catch (MongoException e) {
 			MorphiaLogger.error("Problem connecting MongoDB", e);
 			throw new RuntimeException(e);
@@ -81,7 +93,7 @@ public class MorphiaPlugin extends Plugin {
 	}
 
 	public static Datastore ds() {
-		return _ds;
+		return ds;
 	}
 
 	public static GridFS gridFs() {
@@ -92,4 +104,59 @@ public class MorphiaPlugin extends Plugin {
 		return ds().getDB();
 	}
 
+	private final Mongo connect(String seeds) {
+		String[] sa = seeds.split("[;,\\s]+");
+		List<ServerAddress> addrs = new ArrayList<ServerAddress>(sa.length);
+		for (String s : sa) {
+			String[] hp = s.split(":");
+			if (0 == hp.length) {
+				continue;
+			}
+			String host = hp[0];
+			int port = 27017;
+			if (hp.length > 1) {
+				port = Integer.parseInt(hp[1]);
+			}
+			try {
+				addrs.add(new ServerAddress(host, port));
+			} catch (UnknownHostException e) {
+
+				MorphiaLogger.error(e, "error creating mongo connection to %s:%s", host, port);
+			}
+		}
+		if (addrs.isEmpty()) {
+			throw Configuration.root().reportError(ConfigKey.DB_SEEDS.getKey(), "Cannot connect to mongodb: no replica can be connected", null);
+		}
+		return new Mongo(addrs);
+	}
+
+	private final Mongo connect(String host, String port) {
+		String[] ha = host.split("[,\\s;]+");
+		String[] pa = port.split("[,\\s;]+");
+		int len = ha.length;
+		if (len != pa.length) {
+			throw Configuration.root().reportError(ConfigKey.DB_HOST.getKey() + "-" + ConfigKey.DB_PORT.getKey(), "host and ports number does not match", null);
+		}
+		if (1 == len) {
+			try {
+				return new Mongo(ha[0], Integer.parseInt(pa[0]));
+			} catch (Exception e) {
+				throw Configuration.root().reportError(ConfigKey.DB_HOST.getKey() + "-" + ConfigKey.DB_PORT.getKey(),
+						String.format("Cannot connect to mongodb at %s:%s", host, port), e);
+			}
+		}
+		List<ServerAddress> addrs = new ArrayList<ServerAddress>(ha.length);
+		for (int i = 0; i < len; ++i) {
+			try {
+				addrs.add(new ServerAddress(ha[i], Integer.parseInt(pa[i])));
+			} catch (Exception e) {
+				MorphiaLogger.error(e, "Error creating mongo connection to %s:%s", host, port);
+			}
+		}
+		if (addrs.isEmpty()) {
+			throw Configuration.root().reportError(ConfigKey.DB_HOST.getKey() + "-" + ConfigKey.DB_PORT.getKey(),
+					"Cannot connect to mongodb: no replica can be connected", null);
+		}
+		return new Mongo(addrs);
+	}
 }
