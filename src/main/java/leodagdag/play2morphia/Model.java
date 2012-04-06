@@ -7,16 +7,12 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanWrapperImpl;
 
 import play.Logger;
-import play.libs.F.Tuple;
-
 
 import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Transient;
@@ -94,6 +90,10 @@ public class Model {
 			return MorphiaPlugin.ds().createQuery(type).field(Mapper.ID_KEY).equal(id).get();
 		}
 
+		public List<T> all() {
+			return MorphiaPlugin.ds().find(type).asList();
+		}
+
 	}
 
 	/*
@@ -151,10 +151,7 @@ public class Model {
 			for (Field blobField : blobFields) {
 				Blob blob = (Blob) blobField.get(this);
 				String bloblFieldName = getBlobFileName(blobField.getName());
-				if (blobChanged(bloblFieldName)) { // <= If Blob has changed...
-					Blob.delete(bloblFieldName); // <= ... we delete it ONLY
-													// from Database
-				}
+				Blob.delete(bloblFieldName); // <= ... we delete it from database
 				if (null != blob) { // <= If blob is not null
 					GridFSDBFile file = blob.getGridFSFile();
 					if (null != file) {
@@ -164,24 +161,33 @@ public class Model {
 				}
 			}
 
-			blobFieldsTracker.clear();
 		} catch (Exception e) {
 			Logger.error("Error during save blob", e);
 		}
 	}
 
 	private void deleteBlobs() {
+		try {
+			List<Field> blobFields = new ArrayList<Field>();
+			Field[] fields = this.getClass().getFields();
+			for (Field field : fields) {
+				if (field.getClass().equals(Blob.class)) {
+					blobFields.add(field);
+				}
+			}
+			if (blobFields.isEmpty()) {
+				return;
+			}
 
-	}
+			for (Field blobField : blobFields) {
+				String bloblFieldName = getBlobFileName(blobField.getName());
+				Blob.delete(bloblFieldName); // <= ... we delete it ONLY from
+												// Database
+			}
 
-	private final Map<String, Boolean> blobFieldsTracker = new HashMap<String, Boolean>();
-
-	private final boolean blobChanged(String fieldName) {
-		return (blobFieldsTracker.containsKey(fieldName) && blobFieldsTracker.get(fieldName));
-	}
-
-	private final void setBlobChanged(String fieldName) {
-		blobFieldsTracker.put(fieldName, true);
+		} catch (Exception e) {
+			Logger.error("Error during save blob", e);
+		}
 	}
 
 	public String getBlobFileName(String fieldName) {

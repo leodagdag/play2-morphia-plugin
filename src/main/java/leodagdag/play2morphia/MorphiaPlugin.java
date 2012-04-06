@@ -28,7 +28,7 @@ import com.mongodb.gridfs.GridFS;
 
 public class MorphiaPlugin extends Plugin {
 
-	public static final String VERSION = "0.0.2";
+	public static final String VERSION = "0.0.3";
 
 	private static Mongo mongo = null;
 	private static Morphia morphia = null;
