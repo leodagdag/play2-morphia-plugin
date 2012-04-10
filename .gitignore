@@ -3,3 +3,7 @@ target
 .classpath
 .project
 .cache
+.idea
+.idea_modules
+samples/yabe/bin/
+samples/yabe/yabe.iml

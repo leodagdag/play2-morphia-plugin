@@ -21,8 +21,9 @@ import com.google.code.morphia.query.QueryImpl;
 import com.mongodb.gridfs.GridFSDBFile;
 
 public class Model {
+    private static String fieldName;
 
-	// -- Magic to dynamically access the @Id property
+    // -- Magic to dynamically access the @Id property
 
 	@Transient
 	private Tuple<Method, Method> _idGetSet;
@@ -41,7 +42,7 @@ public class Model {
 					clazz = clazz.getSuperclass();
 				}
 				if (_idGetSet == null) {
-					throw new RuntimeException("No @javax.persistence.Id field found in class [" + this.getClass() + "]");
+					throw new RuntimeException("No @com.google.code.morphia.annotations.Transient field found in class [" + this.getClass() + "]");
 				}
 			} catch (RuntimeException e) {
 				throw e;
@@ -135,12 +136,11 @@ public class Model {
 	 * Blobs management
 	 */
 	private void saveBlobs() {
-
 		try {
 			List<Field> blobFields = new ArrayList<Field>();
 			Field[] fields = this.getClass().getFields();
 			for (Field field : fields) {
-				if (field.getClass().equals(Blob.class)) {
+				if (field.getType().equals(Blob.class)) {
 					blobFields.add(field);
 				}
 			}
@@ -150,13 +150,13 @@ public class Model {
 
 			for (Field blobField : blobFields) {
 				Blob blob = (Blob) blobField.get(this);
-				String bloblFieldName = getBlobFileName(blobField.getName());
+				String bloblFieldName = computeBlobFileName(blobField.getName());
 				Blob.delete(bloblFieldName); // <= ... we delete it from database
 				if (null != blob) { // <= If blob is not null
-					GridFSDBFile file = blob.getGridFSFile();
-					if (null != file) {
-						file.put("name", bloblFieldName);
-						file.save();
+					GridFSDBFile gridFSFile = blob.getGridFSFile();
+					if (null != gridFSFile) {
+						gridFSFile.put("name", bloblFieldName);
+						gridFSFile.save();
 					}
 				}
 			}
@@ -180,7 +180,7 @@ public class Model {
 			}
 
 			for (Field blobField : blobFields) {
-				String bloblFieldName = getBlobFileName(blobField.getName());
+				String bloblFieldName = computeBlobFileName(blobField.getName());
 				Blob.delete(bloblFieldName); // <= ... we delete it ONLY from
 												// Database
 			}
@@ -190,11 +190,7 @@ public class Model {
 		}
 	}
 
-	public String getBlobFileName(String fieldName) {
-		return getBlobFileName(getClass().getSimpleName(), _getId(), fieldName);
-	}
-
-	public static String getBlobFileName(String className, Object id, String fieldName) {
-		return String.format("%s_%s_%s", className, StringUtils.capitalize(fieldName), id);
+	String computeBlobFileName(String fieldName) {
+		return String.format("%s_%s_%s", getClass().getSimpleName(), _getId(), fieldName);
 	}
 }

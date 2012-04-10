@@ -12,7 +12,7 @@ public enum ConfigKey {
 
 	public static final String PREFIX = "morphia";
 	
-	private String key;
+	private final String key;
 
 	private ConfigKey(String key) {
 		this.key = key;

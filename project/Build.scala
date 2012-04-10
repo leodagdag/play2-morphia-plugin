@@ -14,7 +14,7 @@ object Play2MorphiaPluginBuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime,
       publishMavenStyle := true,
-      publishTo := Some(githubRepository),
+      publishTo := Some(dropboxRepository),
       scalacOptions ++= Seq("-Xlint","-deprecation", "-unchecked","-encoding", "utf8"),
       javacOptions ++= Seq("-encoding", "utf8", "-g"),
       resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository, Resolvers.morphiaRepository)
@@ -41,13 +41,14 @@ object Play2MorphiaPluginBuild extends Build {
           .exclude("commons-logging", "commons-logging"),
         ("org.springframework"       % "spring-beans"          % "3.0.7.RELEASE" notTransitive())
           .exclude("org.springframework", "spring-core"),
-        "commons-lang"               % "commons-lang"          %   "2.6"
+        "commons-lang"               % "commons-lang"          % "2.6",
+        "org.javassist"              % "javassist"             % "3.16.1-GA"
       )
   }
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.3"
+    val buildVersion      = "0.0.6"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.2"
     val buildSettings = Defaults.defaultSettings ++ Seq (
