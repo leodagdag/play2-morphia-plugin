@@ -48,7 +48,7 @@ object Play2MorphiaPluginBuild extends Build {
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.6"
+    val buildVersion      = "0.0.4"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.2"
     val buildSettings = Defaults.defaultSettings ++ Seq (

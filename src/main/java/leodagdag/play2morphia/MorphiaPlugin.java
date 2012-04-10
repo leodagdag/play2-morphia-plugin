@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class MorphiaPlugin extends Plugin {
 
-    public static final String VERSION = "0.0.6";
+    public static final String VERSION = "0.0.4";
 
     private static Morphia morphia = null;
     private static Datastore ds = null;
