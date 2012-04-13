@@ -14,7 +14,7 @@ object Play2MorphiaPluginBuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime,
       publishMavenStyle := true,
-      publishTo := Some(dropboxRepository),
+      publishTo := Some(githubRepository),
       scalacOptions ++= Seq("-Xlint","-deprecation", "-unchecked","-encoding", "utf8"),
       javacOptions ++= Seq("-encoding", "utf8", "-g"),
       resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository, Resolvers.morphiaRepository)

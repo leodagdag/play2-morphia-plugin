@@ -76,23 +76,17 @@ public class MorphiaPlugin extends Plugin {
             // Create datastore
             ds = morphia.createDatastore(mongo, dbName);
 
-
             MorphiaLogger.debug("Datastore [%s] created", dbName);
             // Create GridFS
             String uploadCollection = morphiaConf.getString(ConfigKey.COLLECTION_UPLOADS.getKey());
             if (StringUtils.isBlank(dbName)) {
                 uploadCollection = "uploads";
-                MorphiaLogger.warn("Missing Morphia configuration key [%s]. Use defautl value instead [%s]", ConfigKey.COLLECTION_UPLOADS, "uploads");
+                MorphiaLogger.warn("Missing Morphia configuration key [%s]. Use defqult value instead [%s]", ConfigKey.COLLECTION_UPLOADS, "uploads");
             }
             gridfs = new GridFS(ds.getDB(), uploadCollection);
             MorphiaLogger.debug("GridFS created", "");
             MorphiaLogger.debug("Add Interceptor...", "");
             morphia.getMapper().addInterceptor(new AbstractEntityInterceptor() {
-
-                @Override
-                public void prePersist(final Object ent, final DBObject dbObj, final Mapper mapr) {
-                    super.prePersist(ent, dbObj, mapr);
-                }
 
                 @Override
                 public void postLoad(final Object ent, final DBObject dbObj, final Mapper mapr) {
@@ -104,7 +98,7 @@ public class MorphiaPlugin extends Plugin {
             });
             MorphiaLogger.debug("Classes mapping...", "");
             mapClasses();
-            MorphiaLogger.debug("End of initalize Morphia", "");
+            MorphiaLogger.debug("End of initializing Morphia", "");
         } catch (MongoException e) {
             MorphiaLogger.error(e, "Problem connecting MongoDB");
             throw new RuntimeException(e);

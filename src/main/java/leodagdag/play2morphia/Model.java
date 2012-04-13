@@ -176,7 +176,6 @@ public class Model {
             if (blobFields.isEmpty()) {
                 return;
             }
-
             for (Field blobField : blobFields) {
                 Blob blob = (Blob) blobField.get(this);
                 String bloblFieldName = computeBlobFileName(blobField.getName());
@@ -189,7 +188,6 @@ public class Model {
                     }
                 }
             }
-
         } catch (Exception e) {
             Logger.error("Error during save blob", e);
         }
@@ -207,19 +205,17 @@ public class Model {
             if (blobFields.isEmpty()) {
                 return;
             }
-
             for (Field blobField : blobFields) {
                 String bloblFieldName = computeBlobFileName(blobField.getName());
                 Blob.delete(bloblFieldName); // <= ... we delete it ONLY from
                 // Database
             }
-
         } catch (Exception e) {
             Logger.error("Error during save blob", e);
         }
     }
 
-    String computeBlobFileName(String fieldName) {
+    protected String computeBlobFileName(String fieldName) {
         return String.format("%s_%s_%s", getClass().getSimpleName(), _getId(), fieldName);
     }
 }

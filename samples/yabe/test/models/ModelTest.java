@@ -1,7 +1,6 @@
 package models;
 
 import com.mongodb.gridfs.GridFSDBFile;
-import javassist.*;
 import leodagdag.play2morphia.Blob;
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -19,25 +18,6 @@ public class ModelTest {
     public void findById() {
         running(fakeApplication(), new Runnable() {
             public void run() {
-                ClassPool classPool = ClassPool.getDefault();
-                ClassPath cp = new ClassClassPath(Post.class);
-                classPool.appendClassPath(cp);
-                try {
-                    CtClass ctPost = classPool.getCtClass(Post.class.getName());
-                    for (CtField ctField : ctPost.getDeclaredFields()) {
-                        for (Object o : ctField.getAnnotations()) {
-                            System.out.println(ctField.getSignature() + ":" + o.toString());
-                        }
-                    }
-                    for (CtMethod ctMethod : ctPost.getDeclaredMethods()) {
-                        System.out.println(ctMethod.toString());
-                        ctMethod.getMethodInfo().getCodeAttribute();
-                    }
-                } catch (NotFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
                 File picture = new File("public/images/test/test.jpg");
                 Post post = new Post();
                 post.title = "fake post";
