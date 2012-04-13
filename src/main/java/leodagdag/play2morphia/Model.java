@@ -73,9 +73,17 @@ public class Model {
 		}
 	}
 
-	/*
-	 * Search Method
-	 */
+    public void _h_Loaded() {
+        loadBlobs();
+    }
+
+    protected void loadBlobs() {
+        // Enhanced by MorphiaPlugin
+    }
+
+    /*
+      * Search Method
+      */
 	public static class Finder<I, T extends Model> extends QueryImpl<T> {
 
 		private final Class<I> idType;

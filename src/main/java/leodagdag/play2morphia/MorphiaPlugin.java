@@ -1,14 +1,13 @@
 package leodagdag.play2morphia;
 
+import com.google.code.morphia.AbstractEntityInterceptor;
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.google.code.morphia.logging.MorphiaLoggerFactory;
 import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
+import com.google.code.morphia.mapping.Mapper;
 import com.google.code.morphia.validation.MorphiaValidation;
-import com.mongodb.DB;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.ConfigKey;
 import leodagdag.play2morphia.utils.MorphiaLogger;
@@ -26,7 +25,7 @@ import java.util.Set;
 
 public class MorphiaPlugin extends Plugin {
 
-    public static final String VERSION = "0.0.4";
+    public static final String VERSION = "0.0.6";
 
     private static Morphia morphia = null;
     private static Datastore ds = null;
@@ -74,6 +73,8 @@ public class MorphiaPlugin extends Plugin {
             morphiaValidation.applyTo(morphia);
             // Create datastore
             ds = morphia.createDatastore(mongo, dbName);
+
+
             MorphiaLogger.debug("Datastore [%s] created", dbName);
             // Create GridFS
             String uploadCollection = morphiaConf.getString(ConfigKey.COLLECTION_UPLOADS.getKey());
@@ -86,6 +87,16 @@ public class MorphiaPlugin extends Plugin {
             MorphiaLogger.debug("Enhancement of classes...", "");
             MorphiaEnhancer.enhanceModels(Play.application());
             MorphiaLogger.debug("Mapping of classes...", "");
+            morphia.getMapper().addInterceptor(new AbstractEntityInterceptor() {
+
+                @Override
+                public void postLoad(final Object ent, final DBObject dbObj, final Mapper mapr) {
+                    if (ent instanceof Model) {
+                        Model m = (Model) ent;
+                        m._h_Loaded();
+                    }
+                }
+            });
             mapClasses();
             MorphiaLogger.debug("End of initalize Morphia", "");
         } catch (MongoException e) {

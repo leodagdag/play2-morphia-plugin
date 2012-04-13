@@ -19,4 +19,6 @@ public class Post extends Model {
 
     @Transient
     public static Model.Finder<ObjectId, Post> find = new Model.Finder<ObjectId, Post>(ObjectId.class, Post.class);
+
+
 }
