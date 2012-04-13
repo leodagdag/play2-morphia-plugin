@@ -17,6 +17,8 @@ public class Post extends Model {
 
     public Blob picture;
 
-    @Transient
+
     public static Model.Finder<ObjectId, Post> find = new Model.Finder<ObjectId, Post>(ObjectId.class, Post.class);
+
+
 }

@@ -1,21 +1,19 @@
 package leodagdag.play2morphia;
 
+import com.google.code.morphia.AbstractEntityInterceptor;
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.Morphia;
 import com.google.code.morphia.logging.MorphiaLoggerFactory;
 import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
+import com.google.code.morphia.mapping.Mapper;
 import com.google.code.morphia.validation.MorphiaValidation;
-import com.mongodb.DB;
-import com.mongodb.Mongo;
-import com.mongodb.MongoException;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.ConfigKey;
 import leodagdag.play2morphia.utils.MorphiaLogger;
 import org.apache.commons.lang.StringUtils;
 import play.Application;
 import play.Configuration;
-import play.Play;
 import play.Plugin;
 
 import java.net.UnknownHostException;
@@ -23,11 +21,14 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class MorphiaPlugin extends Plugin {
 
-    public static final String VERSION = "0.0.4";
+    public static final String VERSION = "0.0.5";
 
+    private static Mongo mongo = null;
     private static Morphia morphia = null;
     private static Datastore ds = null;
     private final Application application;
@@ -59,7 +60,7 @@ public class MorphiaPlugin extends Plugin {
 
             // Connect to MongoDB
             String seeds = morphiaConf.getString(ConfigKey.DB_SEEDS.getKey());
-            Mongo mongo = null;
+
             if (StringUtils.isNotBlank(seeds)) {
                 mongo = connect(seeds);
             } else {
@@ -74,6 +75,8 @@ public class MorphiaPlugin extends Plugin {
             morphiaValidation.applyTo(morphia);
             // Create datastore
             ds = morphia.createDatastore(mongo, dbName);
+
+
             MorphiaLogger.debug("Datastore [%s] created", dbName);
             // Create GridFS
             String uploadCollection = morphiaConf.getString(ConfigKey.COLLECTION_UPLOADS.getKey());
@@ -83,9 +86,23 @@ public class MorphiaPlugin extends Plugin {
             }
             gridfs = new GridFS(ds.getDB(), uploadCollection);
             MorphiaLogger.debug("GridFS created", "");
-            MorphiaLogger.debug("Enhancement of classes...", "");
-            MorphiaEnhancer.enhanceModels(Play.application());
-            MorphiaLogger.debug("Mapping of classes...", "");
+            MorphiaLogger.debug("Add Interceptor...", "");
+            morphia.getMapper().addInterceptor(new AbstractEntityInterceptor() {
+
+                @Override
+                public void prePersist(final Object ent, final DBObject dbObj, final Mapper mapr) {
+                    super.prePersist(ent, dbObj, mapr);
+                }
+
+                @Override
+                public void postLoad(final Object ent, final DBObject dbObj, final Mapper mapr) {
+                    if (ent instanceof Model) {
+                        Model m = (Model) ent;
+                        m._post_Load();
+                    }
+                }
+            });
+            MorphiaLogger.debug("Classes mapping...", "");
             mapClasses();
             MorphiaLogger.debug("End of initalize Morphia", "");
         } catch (MongoException e) {
@@ -106,6 +123,22 @@ public class MorphiaPlugin extends Plugin {
             MorphiaLogger.debug("mapping class: %1$s", clazz);
             morphia.map(Class.forName(clazz, true, application.classloader()));
         }
+    }
+
+    private final static ConcurrentMap<String, Datastore> dataStores = new ConcurrentHashMap<String, Datastore>();
+
+    public static Datastore ds(String dbName) {
+        if (StringUtils.isBlank(dbName))
+            return ds();
+        Datastore ds = dataStores.get(dbName);
+        if (null == ds) {
+            Datastore ds0 = morphia.createDatastore(mongo, dbName);
+            ds = dataStores.putIfAbsent(dbName, ds0);
+            if (null == ds) {
+                ds = ds0;
+            }
+        }
+        return ds;
     }
 
     public static Datastore ds() {
@@ -136,7 +169,7 @@ public class MorphiaPlugin extends Plugin {
             try {
                 addrs.add(new ServerAddress(host, port));
             } catch (UnknownHostException e) {
-                MorphiaLogger.error(e, "error creating mongo connection to %s:%s", host, port);
+                MorphiaLogger.error(e, "Error creating mongo connection to %s:%s", host, port);
             }
         }
         if (addrs.isEmpty()) {
