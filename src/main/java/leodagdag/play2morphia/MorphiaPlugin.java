@@ -73,15 +73,29 @@ public class MorphiaPlugin extends Plugin {
             // Configure validator
             MorphiaValidation morphiaValidation = new MorphiaValidation();
             morphiaValidation.applyTo(morphia);
+
+			//Check if credentials parameters are present
+			String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
+			String password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
+						
+			if(StringUtils.isNotBlank(username) ^ StringUtils.isNotBlank(password)){
+				throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing username or password", null);
+			}
+			
             // Create datastore
-            ds = morphia.createDatastore(mongo, dbName);
+			if(StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)){
+				ds = morphia.createDatastore(mongo, dbName, username, password.toCharArray());
+			} else {
+            	ds = morphia.createDatastore(mongo, dbName);				
+			}
+
 
             MorphiaLogger.debug("Datastore [%s] created", dbName);
             // Create GridFS
             String uploadCollection = morphiaConf.getString(ConfigKey.COLLECTION_UPLOADS.getKey());
             if (StringUtils.isBlank(dbName)) {
                 uploadCollection = "uploads";
-                MorphiaLogger.warn("Missing Morphia configuration key [%s]. Use defqult value instead [%s]", ConfigKey.COLLECTION_UPLOADS, "uploads");
+                MorphiaLogger.warn("Missing Morphia configuration key [%s]. Use default value instead [%s]", ConfigKey.COLLECTION_UPLOADS, "uploads");
             }
             gridfs = new GridFS(ds.getDB(), uploadCollection);
             MorphiaLogger.debug("GridFS created", "");
