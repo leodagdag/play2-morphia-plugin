@@ -13,7 +13,7 @@ addSbtPlugin("com.typesafe.sbtscalariform" % "sbtscalariform" % "0.3.1")
 resolvers += "jgit-repo" at "http://download.eclipse.org/jgit/maven"
 
 // Generate eclipse project
-addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.0.0")
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.1.0-RC1")
 
 // Use for intellij
 resolvers += "sbt-idea-repo" at "http://mpeltonen.github.com/maven/"

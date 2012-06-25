@@ -35,7 +35,7 @@ object Play2MorphiaPluginBuild extends Build {
         "com.google.code.morphia"    % "morphia-validation"    % "0.99",
         "cglib"                      % "cglib-nodep"           % "[2.1_3,)",
         "com.thoughtworks.proxytoys" % "proxytoys"             % "1.0",
-        "play"                       %% "play"                 % "2.0" % "provided" notTransitive(),
+        "play"                       %% "play"                 % "2.0.1" % "provided" notTransitive(),
         ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" notTransitive())
           .exclude("org.springframework", "spring-asm")
           .exclude("commons-logging", "commons-logging"),
@@ -50,7 +50,7 @@ object Play2MorphiaPluginBuild extends Build {
     val buildOrganization = "leodagdag"
     val buildVersion      = "0.0.6"
     val buildScalaVersion = "2.9.1"
-    val buildSbtVersion   = "0.11.2"
+    val buildSbtVersion   = "0.11.3"
     val buildSettings = Defaults.defaultSettings ++ Seq (
       organization   := buildOrganization,
       version        := buildVersion,

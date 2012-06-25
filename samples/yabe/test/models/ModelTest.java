@@ -27,17 +27,17 @@ public class ModelTest {
                 post.insert();
                 ObjectId id = post.id;
 
-                post = Post.find.byId(id);
+                post = Post.find().byId(id);
                 GridFSDBFile gridFSDBFile = post.picture.getGridFSFile();
                 assertThat(gridFSDBFile).isNotNull();
 
                 assertThat(post.title).isEqualTo("fake post");
-                assertThat(Post.find.byId(post.id).id).isEqualTo(post.id);
-                assertThat(Post.find.byId(post.id).title).isEqualTo(post.title);
-                assertThat(Post.find.asList().size()).isGreaterThan(0);
+                assertThat(Post.find().byId(post.id).id).isEqualTo(post.id);
+                assertThat(Post.find().byId(post.id).title).isEqualTo(post.title);
+                assertThat(Post.find().asList().size()).isGreaterThan(0);
                 post.title = "real title";
                 post.update();
-                assertThat(Post.find.byId(post.id).title).isEqualTo(post.title);
+                assertThat(Post.find().byId(post.id).title).isEqualTo(post.title);
             }
         });
     }

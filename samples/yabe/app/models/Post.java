@@ -16,7 +16,9 @@ public class Post extends Model {
 
     public Blob picture;
 
-    public static Model.Finder<ObjectId, Post> find = new Model.Finder<ObjectId, Post>(ObjectId.class, Post.class);
-
+    public static Model.Finder<ObjectId, Post> find(){
+    	return new Model.Finder<ObjectId, Post>(ObjectId.class, Post.class);
+    }
+    
 
 }
