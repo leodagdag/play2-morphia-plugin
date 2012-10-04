@@ -11,7 +11,7 @@ import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.ConfigKey;
 import leodagdag.play2morphia.utils.MorphiaLogger;
-import org.apache.commons.lang.StringUtils;
+import leodagdag.play2morphia.utils.StringUtils;
 import play.Application;
 import play.Configuration;
 import play.Plugin;
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class MorphiaPlugin extends Plugin {
 
-    public static final String VERSION = "0.0.5";
+    public static final String VERSION = "0.0.7";
 
     private static Mongo mongo = null;
     private static Morphia morphia = null;
@@ -74,20 +74,20 @@ public class MorphiaPlugin extends Plugin {
             MorphiaValidation morphiaValidation = new MorphiaValidation();
             morphiaValidation.applyTo(morphia);
 
-			//Check if credentials parameters are present
-			String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
-			String password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
-						
-			if(StringUtils.isNotBlank(username) ^ StringUtils.isNotBlank(password)){
-				throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing username or password", null);
-			}
-			
+            //Check if credentials parameters are present
+            String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
+            String password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
+
+            if (StringUtils.isNotBlank(username) ^ StringUtils.isNotBlank(password)) {
+                throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing username or password", null);
+            }
+
             // Create datastore
-			if(StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)){
-				ds = morphia.createDatastore(mongo, dbName, username, password.toCharArray());
-			} else {
-            	ds = morphia.createDatastore(mongo, dbName);				
-			}
+            if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
+                ds = morphia.createDatastore(mongo, dbName, username, password.toCharArray());
+            } else {
+                ds = morphia.createDatastore(mongo, dbName);
+            }
 
 
             MorphiaLogger.debug("Datastore [%s] created", dbName);
@@ -131,13 +131,16 @@ public class MorphiaPlugin extends Plugin {
             MorphiaLogger.debug("mapping class: %1$s", clazz);
             morphia.map(Class.forName(clazz, true, application.classloader()));
         }
+        ds.ensureCaps();
+        ds.ensureIndexes();
     }
 
     private final static ConcurrentMap<String, Datastore> dataStores = new ConcurrentHashMap<String, Datastore>();
 
     public static Datastore ds(String dbName) {
-        if (StringUtils.isBlank(dbName))
+        if (StringUtils.isBlank(dbName)) {
             return ds();
+        }
         Datastore ds = dataStores.get(dbName);
         if (null == ds) {
             Datastore ds0 = morphia.createDatastore(mongo, dbName);

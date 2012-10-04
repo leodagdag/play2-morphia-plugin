@@ -50,6 +50,10 @@ public class Model {
         return _idGetSet;
     }
 
+    /**
+     * Id getter
+     * @return
+     */
     private Object _getId() {
         try {
             return _idAccessors()._1.invoke(this);
@@ -60,6 +64,10 @@ public class Model {
         }
     }
 
+    /**
+     * Id setter
+     * @param id
+     */
     private void _setId(Object id) {
         try {
             _idAccessors()._2.invoke(this, id);
@@ -70,41 +78,14 @@ public class Model {
         }
     }
 
+
     public void _post_Load() {
         loadBlobs();
     }
 
-    protected void loadBlobs() {
-        try {
-            Class<?> clazz = this.getClass();
-            List<Field> blobFields = new ArrayList<Field>();
-            while (clazz != null) {
-                for (Field f : clazz.getDeclaredFields()) {
-                    if (f.getType().equals(Blob.class)) {
-                        blobFields.add(f);
-                    }
-                }
-                clazz = clazz.getSuperclass();
-            }
-            if (!blobFields.isEmpty()) {
-                for (Field blobField : blobFields) {
-                    String fileName = computeBlobFileName(blobField.getName());
-                    Blob b = new Blob(fileName);
-                    if (b.exists()) {
-                        blobField.set(this, b);
-                    }
-                }
-            }
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /*
-      * Search Method
-      */
+    * Search Methods
+    */
     public static class Finder<I, T extends Model> extends QueryImpl<T> {
 
         private final Class<I> idType;
@@ -123,7 +104,6 @@ public class Model {
         public List<T> all() {
             return MorphiaPlugin.ds().find(type).asList();
         }
-
     }
 
     /*
@@ -212,6 +192,34 @@ public class Model {
             }
         } catch (Exception e) {
             Logger.error("Error during save blob", e);
+        }
+    }
+
+    protected void loadBlobs() {
+        try {
+            Class<?> clazz = this.getClass();
+            List<Field> blobFields = new ArrayList<Field>();
+            while (clazz != null) {
+                for (Field f : clazz.getDeclaredFields()) {
+                    if (f.getType().equals(Blob.class)) {
+                        blobFields.add(f);
+                    }
+                }
+                clazz = clazz.getSuperclass();
+            }
+            if (!blobFields.isEmpty()) {
+                for (Field blobField : blobFields) {
+                    String fileName = computeBlobFileName(blobField.getName());
+                    Blob b = new Blob(fileName);
+                    if (b.exists()) {
+                        blobField.set(this, b);
+                    }
+                }
+            }
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

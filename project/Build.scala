@@ -1,6 +1,5 @@
 import sbt._
 import Keys._
-import com.typesafe.sbteclipse.plugin.EclipsePlugin._
 
 object Play2MorphiaPluginBuild extends Build {
 
@@ -12,14 +11,15 @@ object Play2MorphiaPluginBuild extends Build {
     "play2-morphia-plugin",
     file("."),
     settings = buildSettings ++ Seq(
-      libraryDependencies := runtime,
+      libraryDependencies := runtime ++ test,
       publishMavenStyle := true,
       publishTo := Some(githubRepository),
       scalacOptions ++= Seq("-Xlint","-deprecation", "-unchecked","-encoding", "utf8"),
       javacOptions ++= Seq("-encoding", "utf8", "-g"),
-      resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository, Resolvers.morphiaRepository)
+      resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository, Resolvers.morphiaRepository),
+      checksums := Nil // To prevent proxyToys downloding fails https://github.com/leodagdag/play2-morphia-plugin/issues/11
     )
-  ).settings(com.typesafe.sbtscalariform.ScalariformPlugin.defaultScalariformSettings: _*)
+  ).settings()
 
   object Resolvers {
     val githubRepository =  Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.mavenStylePatterns)
@@ -35,20 +35,21 @@ object Play2MorphiaPluginBuild extends Build {
         "com.google.code.morphia"    % "morphia-validation"    % "0.99",
         "cglib"                      % "cglib-nodep"           % "[2.1_3,)",
         "com.thoughtworks.proxytoys" % "proxytoys"             % "1.0",
-        "play"                       %% "play"                 % "2.0.1" % "provided" notTransitive(),
+        "play"                       %% "play"                 % "2.0.4" % "compile" notTransitive(),
         ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" notTransitive())
           .exclude("org.springframework", "spring-asm")
           .exclude("commons-logging", "commons-logging"),
         ("org.springframework"       % "spring-beans"          % "3.0.7.RELEASE" notTransitive())
-          .exclude("org.springframework", "spring-core"),
-        "commons-lang"               % "commons-lang"          % "2.6",
-        "org.javassist"              % "javassist"             % "3.16.1-GA"
+          .exclude("org.springframework", "spring-core")
+      )
+      val test = Seq(
+        "play" %% "play-test" % "2.0.4" % "test"
       )
   }
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.6"
+    val buildVersion      = "0.0.7"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.3"
     val buildSettings = Defaults.defaultSettings ++ Seq (
@@ -56,10 +57,5 @@ object Play2MorphiaPluginBuild extends Build {
       version        := buildVersion,
       scalaVersion   := buildScalaVersion
     )
-  }
-
-  object EclipsePlugin {
-    EclipseKeys.executionEnvironment := Some(EclipseExecutionEnvironment.JavaSE16)
-    EclipseKeys.withSource := true
   }
 }
