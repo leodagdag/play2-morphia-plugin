@@ -26,10 +26,9 @@ public class TestConfig {
         config.put(PREFIX + "." + COLLECTION_UPLOADS.getKey(), "fs");
         config.put(PREFIX + "." + LOGGER.getKey(), "true");
         // Disable unused plugin
-        config.put("JPAPlugin", "disabled");
-        config.put("EvolutionPlugin", "disabled");
-        config.put("CachePlugin", "disabled");
-        config.put("EhCachePlugin","disabled");
+        config.put("dbplugin", "disabled");
+        config.put("evolutionplugin", "disabled");
+        config.put("ehcacheplugin","disabled");
     }
 
     public Map<String, String> config() {

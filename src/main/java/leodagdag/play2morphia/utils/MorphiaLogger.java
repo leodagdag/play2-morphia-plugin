@@ -1,6 +1,5 @@
 package leodagdag.play2morphia.utils;
 
-import leodagdag.play2morphia.MorphiaPlugin;
 import play.Configuration;
 import play.Logger;
 
@@ -34,11 +33,15 @@ public class MorphiaLogger {
     }
 
     public static void debug(String msg, Object... args) {
-        Logger.debug(format(msg, args));
+        if (isDebugEnabled()) {
+            Logger.debug(format(msg, args));
+        }
     }
 
     public static void debug(Throwable t, String msg, Object... args) {
-        Logger.debug(format(msg, args), t);
+        if (isDebugEnabled()) {
+            Logger.debug(format(msg, args), t);
+        }
     }
 
     public static void warn(String msg, Object... args) {
@@ -58,7 +61,7 @@ public class MorphiaLogger {
     }
 
     private static String format(String msg, Object... args) {
-        return String.format("MorphiaPlugin-%s> %1$s", Constants.VERSION, String.format(msg, args));
+        return String.format("MorphiaPlugin-%s> %s", Constants.VERSION, String.format(msg, args));
     }
 
 }

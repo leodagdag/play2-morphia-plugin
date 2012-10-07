@@ -12,7 +12,7 @@ object Play2MorphiaPluginBuild extends Build {
     file("."),
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime ++ test,
-      publishMavenStyle := true,
+      publishMavenStyle := false,
       publishTo := Some(githubRepository),
       scalacOptions ++= Seq("-Xlint","-deprecation", "-unchecked","-encoding", "utf8"),
       javacOptions ++= Seq("-encoding", "utf8", "-g"),
