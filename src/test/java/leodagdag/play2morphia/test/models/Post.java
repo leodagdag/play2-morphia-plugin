@@ -1,8 +1,7 @@
-package leodagdag.play2morphia.models;
+package leodagdag.play2morphia.test.models;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Id;
-import leodagdag.play2morphia.Blob;
 import leodagdag.play2morphia.Model;
 import org.bson.types.ObjectId;
 

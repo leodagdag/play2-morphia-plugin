@@ -131,8 +131,9 @@ public class MorphiaPlugin extends Plugin {
             MorphiaLogger.debug("mapping class: %1$s", clazz);
             morphia.map(Class.forName(clazz, true, application.classloader()));
         }
-        ds.ensureCaps();
-        ds.ensureIndexes();
+        // @see http://code.google.com/p/morphia/wiki/Datastore#Ensure_Indexes_and_Caps
+        ds.ensureCaps(); //creates capped collections from @Entity
+        ds.ensureIndexes(); //creates indexes from @Index annotations in your entities
     }
 
     private final static ConcurrentMap<String, Datastore> dataStores = new ConcurrentHashMap<String, Datastore>();

@@ -1,4 +1,4 @@
-package leodagdag.play2morphia.utils;
+package leodagdag.play2morphia.test.utils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +25,11 @@ public class TestConfig {
         config.put(PREFIX + "." + DEFAULT_WRITE_CONCERN.getKey(), "SAFE");
         config.put(PREFIX + "." + COLLECTION_UPLOADS.getKey(), "fs");
         config.put(PREFIX + "." + LOGGER.getKey(), "true");
+        // Disable unused plugin
+        config.put("JPAPlugin", "disabled");
+        config.put("EvolutionPlugin", "disabled");
+        config.put("CachePlugin", "disabled");
+        config.put("EhCachePlugin","disabled");
     }
 
     public Map<String, String> config() {
