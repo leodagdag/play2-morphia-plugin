@@ -31,7 +31,6 @@ public class ModelTest extends AbstractTest {
     }
 
     @Test
-    @Ignore
     public void testCreate() {
         System.out.println("testCreate");
         running(fakeApplication(TestConfig.getInstance().config()), new Runnable() {
@@ -50,7 +49,6 @@ public class ModelTest extends AbstractTest {
     }
 
     @Test
-    @Ignore
     public void testUpdate() {
         System.out.println("testUpdate");
         running(fakeApplication(TestConfig.getInstance().config()), new Runnable() {
@@ -68,7 +66,6 @@ public class ModelTest extends AbstractTest {
     }
 
     @Test
-    @Ignore
     public void testDelete() {
         System.out.println("testDelete");
         running(fakeApplication(TestConfig.getInstance().config()), new Runnable() {
@@ -86,7 +83,6 @@ public class ModelTest extends AbstractTest {
     }
 
     @Test
-    @Ignore
     public void testFindWithOr() {
         System.out.println("testFindWithOr");
         running(fakeApplication(TestConfig.getInstance().config()), new Runnable() {
@@ -134,7 +130,6 @@ public class ModelTest extends AbstractTest {
     }
 
     @Test
-    @Ignore
     public void testInheritenceAndReference() {
         System.out.println("testInheritenceAndReference");
         running(fakeApplication(TestConfig.getInstance().config()), new Runnable() {

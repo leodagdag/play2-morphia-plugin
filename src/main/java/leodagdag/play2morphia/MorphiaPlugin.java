@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 
 public class MorphiaPlugin extends Plugin {
 
-    public static final String VERSION = "0.0.7";
+    public static final String VERSION = "0.0.8";
 
     private static Mongo mongo = null;
     private static Morphia morphia = null;
