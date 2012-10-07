@@ -22,8 +22,8 @@ object Play2MorphiaPluginBuild extends Build {
   ).settings()
 
   object Resolvers {
-    val githubRepository =  Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.mavenStylePatterns)
-    val dropboxRepository =  Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)(Resolver.mavenStylePatterns)
+    val githubRepository =  Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.ivyStylePatterns)
+    val dropboxRepository =  Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)(Resolver.ivyStylePatterns)
     val typesafeRepository = "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
     val morphiaRepository = "Morphia Repository" at "http://morphia.googlecode.com/svn/mavenrepo/"
   }
@@ -36,10 +36,10 @@ object Play2MorphiaPluginBuild extends Build {
         "cglib"                      % "cglib-nodep"           % "[2.1_3,)",
         "com.thoughtworks.proxytoys" % "proxytoys"             % "1.0",
         "play"                       %% "play"                 % "2.0.4" % "compile" notTransitive(),
-        ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" notTransitive())
+        ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" % "compile" notTransitive())
           .exclude("org.springframework", "spring-asm")
           .exclude("commons-logging", "commons-logging"),
-        ("org.springframework"       % "spring-beans"          % "3.0.7.RELEASE" notTransitive())
+        ("org.springframework"       % "spring-beans"          % "3.0.7.RELEASE" % "compile" notTransitive())
           .exclude("org.springframework", "spring-core")
       )
       val test = Seq(
@@ -49,7 +49,7 @@ object Play2MorphiaPluginBuild extends Build {
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.8"
+    val buildVersion      = "0.0.9"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.3"
     val buildSettings = Defaults.defaultSettings ++ Seq (

@@ -58,7 +58,7 @@ public class MorphiaLogger {
     }
 
     private static String format(String msg, Object... args) {
-        return String.format("MorphiaPlugin-%s> %1$s", MorphiaPlugin.VERSION, String.format(msg, args));
+        return String.format("MorphiaPlugin-%s> %1$s", Constants.VERSION, String.format(msg, args));
     }
 
 }
