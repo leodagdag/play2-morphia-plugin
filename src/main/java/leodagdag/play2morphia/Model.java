@@ -52,6 +52,7 @@ public class Model {
 
     /**
      * Id getter
+     *
      * @return
      */
     private Object _getId() {
@@ -66,6 +67,7 @@ public class Model {
 
     /**
      * Id setter
+     *
      * @param id
      */
     private void _setId(Object id) {

@@ -28,7 +28,7 @@ public class TestConfig {
         // Disable unused plugin
         config.put("dbplugin", "disabled");
         config.put("evolutionplugin", "disabled");
-        config.put("ehcacheplugin","disabled");
+        config.put("ehcacheplugin", "disabled");
     }
 
     public Map<String, String> config() {

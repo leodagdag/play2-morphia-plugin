@@ -8,6 +8,7 @@ package leodagdag.play2morphia.utils;
 public class StringUtils {
     /**
      * Re-implementation of org.apache.commons.lang.StringUtils.isBlank() to remove dependency
+     *
      * @param str
      * @return
      */
@@ -24,7 +25,7 @@ public class StringUtils {
         return true;
     }
 
-    public static boolean isNotBlank(String str){
+    public static boolean isNotBlank(String str) {
         return !StringUtils.isBlank(str);
     }
 

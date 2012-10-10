@@ -34,6 +34,7 @@ public class Period {
     void postLoad() {
         start = new DateTime(_start.getTime()).toLocalTime();
     }
+
     @Reference(ignoreMissing = true)
     public Mission mission;
 

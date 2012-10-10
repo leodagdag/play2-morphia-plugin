@@ -17,9 +17,9 @@ public class Post extends Model {
 
     //public Blob picture;
 
-    public static Finder<ObjectId, Post> find(){
-    	return new Finder<ObjectId, Post>(ObjectId.class, Post.class);
+    public static Finder<ObjectId, Post> find() {
+        return new Finder<ObjectId, Post>(ObjectId.class, Post.class);
     }
-    
+
 
 }

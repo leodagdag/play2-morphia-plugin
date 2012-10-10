@@ -1,9 +1,7 @@
 package leodagdag.play2morphia.test.models;
 
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.PreLoad;
 import com.google.code.morphia.annotations.Reference;
-import com.google.code.morphia.annotations.Transient;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -26,7 +24,7 @@ public class HalfDay {
         return !this.periods.isEmpty();
     }
 
-    public void addPeriod(Period period){
+    public void addPeriod(Period period) {
         this.periods.add(period);
     }
 

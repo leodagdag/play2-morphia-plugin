@@ -12,7 +12,7 @@ object Play2MorphiaPluginBuild extends Build {
     file("."),
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime ++ test,
-      publishMavenStyle := false,
+      publishMavenStyle := true,
       publishTo := Some(githubRepository),
       scalacOptions ++= Seq("-Xlint","-deprecation", "-unchecked","-encoding", "utf8"),
       javacOptions ++= Seq("-encoding", "utf8", "-g"),
@@ -49,7 +49,7 @@ object Play2MorphiaPluginBuild extends Build {
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.9"
+    val buildVersion      = "0.0.10"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.3"
     val buildSettings = Defaults.defaultSettings ++ Seq (

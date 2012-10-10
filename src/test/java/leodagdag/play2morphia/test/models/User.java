@@ -28,7 +28,7 @@ public abstract class User extends Model {
 
     public Role role;
 
-    public static  Finder<ObjectId, ? extends User> find() {
+    public static Finder<ObjectId, ? extends User> find() {
         return new Finder<ObjectId, User>(ObjectId.class, User.class);
     }
 

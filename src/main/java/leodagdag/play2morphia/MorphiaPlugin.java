@@ -10,6 +10,7 @@ import com.google.code.morphia.validation.MorphiaValidation;
 import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.ConfigKey;
+import leodagdag.play2morphia.utils.Constants;
 import leodagdag.play2morphia.utils.MorphiaLogger;
 import leodagdag.play2morphia.utils.StringUtils;
 import play.Application;
@@ -26,11 +27,16 @@ import java.util.concurrent.ConcurrentMap;
 
 public class MorphiaPlugin extends Plugin {
 
-    private static Mongo mongo = null;
-    private static Morphia morphia = null;
-    private static Datastore ds = null;
     private final Application application;
+
+    private boolean isEnabled;
+
+    private static Morphia morphia = null;
+
+    private static Mongo mongo = null;
+    private static Datastore ds = null;
     private static GridFS gridfs;
+
 
     public MorphiaPlugin(Application application) {
         this.application = application;
@@ -38,6 +44,9 @@ public class MorphiaPlugin extends Plugin {
 
     @Override
     public void onStart() {
+        if (!isEnabled) {
+            return;
+        }
         // Register SLF4JLogrImplFactory as Logger
         // @see http://nesbot.com/2011/11/28/play-2-morphia-logging-error
         MorphiaLoggerFactory.reset();
@@ -118,6 +127,24 @@ public class MorphiaPlugin extends Plugin {
             MorphiaLogger.error(e, "Problem mapping class");
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void onStop() {
+        if (isEnabled) {
+            MorphiaLoggerFactory.reset();
+            morphia = null;
+            ds = null;
+            gridfs = null;
+            mongo.close();
+        }
+    }
+
+    @Override
+    public boolean enabled() {
+        isEnabled = !"disabled".equals(application.configuration().getString(Constants.MORPHIA_PLUGIN_ENABLED));
+        MorphiaLogger.warn(String.format("MorphiaPlugin is %s", isEnabled ? "enabled" : "disabled"));
+        return isEnabled;
     }
 
     private void mapClasses() throws ClassNotFoundException {
