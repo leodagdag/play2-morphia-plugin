@@ -9,10 +9,7 @@ import com.google.code.morphia.mapping.Mapper;
 import com.google.code.morphia.validation.MorphiaValidation;
 import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
-import leodagdag.play2morphia.utils.ConfigKey;
-import leodagdag.play2morphia.utils.Constants;
-import leodagdag.play2morphia.utils.MorphiaLogger;
-import leodagdag.play2morphia.utils.StringUtils;
+import leodagdag.play2morphia.utils.*;
 import play.Application;
 import play.Configuration;
 import play.Plugin;
@@ -77,6 +74,10 @@ public class MorphiaPlugin extends Plugin {
             }
 
             morphia = new Morphia();
+            // To prevent problem during hot-reload
+            if (application.isDev()) {
+                morphia.getMapper().getOptions().objectFactory = new PlayCreator();
+            }
             // Configure validator
             MorphiaValidation morphiaValidation = new MorphiaValidation();
             morphiaValidation.applyTo(morphia);
