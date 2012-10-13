@@ -12,7 +12,7 @@ object Play2MorphiaPluginBuild extends Build {
     file("."),
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime ++ test,
-      publishMavenStyle := false,
+      publishMavenStyle := true,
       publishTo := Some(githubRepository),
       scalacOptions ++= Seq("-Xlint","-deprecation", "-unchecked","-encoding", "utf8"),
       javacOptions ++= Seq("-encoding", "utf8", "-g"),
@@ -33,7 +33,7 @@ object Play2MorphiaPluginBuild extends Build {
         "com.google.code.morphia"    % "morphia"               % "1.00-SNAPSHOT",
         "com.google.code.morphia"    % "morphia-logging-slf4j" % "0.99",
         "com.google.code.morphia"    % "morphia-validation"    % "0.99",
-        "cglib"                      % "cglib-nodep"           % "[2.1_3,)",
+        "cglib"                      % "cglib"                 % "[2.1_3,)",
         "com.thoughtworks.proxytoys" % "proxytoys"             % "1.0",
         "play"                       %% "play"                 % "2.0.4" % "compile" notTransitive(),
         ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" % "compile" notTransitive())
@@ -49,7 +49,7 @@ object Play2MorphiaPluginBuild extends Build {
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion      = "0.0.11"
+    val buildVersion      = "0.0.12"
     val buildScalaVersion = "2.9.1"
     val buildSbtVersion   = "0.11.3"
     val buildSettings = Defaults.defaultSettings ++ Seq (
