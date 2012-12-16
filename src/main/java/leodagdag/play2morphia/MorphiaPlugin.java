@@ -1,12 +1,14 @@
 package leodagdag.play2morphia;
 
-import com.google.code.morphia.AbstractEntityInterceptor;
-import com.google.code.morphia.Datastore;
-import com.google.code.morphia.Morphia;
-import com.google.code.morphia.logging.MorphiaLoggerFactory;
-import com.google.code.morphia.logging.slf4j.SLF4JLogrImplFactory;
-import com.google.code.morphia.mapping.Mapper;
-import com.google.code.morphia.validation.MorphiaValidation;
+import com.github.jmkgreen.morphia.AbstractEntityInterceptor;
+import com.github.jmkgreen.morphia.Datastore;
+import com.github.jmkgreen.morphia.Morphia;
+import com.github.jmkgreen.morphia.annotations.Embedded;
+import com.github.jmkgreen.morphia.annotations.Entity;
+import com.github.jmkgreen.morphia.logging.MorphiaLoggerFactory;
+import com.github.jmkgreen.morphia.logging.slf4j.SLF4JLogrImplFactory;
+import com.github.jmkgreen.morphia.mapping.Mapper;
+import com.github.jmkgreen.morphia.validation.ValidationExtension;
 import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.*;
@@ -79,8 +81,7 @@ public class MorphiaPlugin extends Plugin {
                 morphia.getMapper().getOptions().objectFactory = new PlayCreator();
             }
             // Configure validator
-            MorphiaValidation morphiaValidation = new MorphiaValidation();
-            morphiaValidation.applyTo(morphia);
+            new ValidationExtension(morphia);
 
             //Check if credentials parameters are present
             String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
@@ -151,8 +152,8 @@ public class MorphiaPlugin extends Plugin {
     private void mapClasses() throws ClassNotFoundException {
         // Register all models.Class
         Set<String> classes = new HashSet<String>();
-        classes.addAll(application.getTypesAnnotatedWith("models", com.google.code.morphia.annotations.Entity.class));
-        classes.addAll(application.getTypesAnnotatedWith("models", com.google.code.morphia.annotations.Embedded.class));
+        classes.addAll(application.getTypesAnnotatedWith("models", Entity.class));
+        classes.addAll(application.getTypesAnnotatedWith("models", Embedded.class));
         for (String clazz : classes) {
             MorphiaLogger.debug("mapping class: %1$s", clazz);
             morphia.map(Class.forName(clazz, true, application.classloader()));

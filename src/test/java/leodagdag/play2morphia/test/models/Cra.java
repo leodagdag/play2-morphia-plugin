@@ -1,8 +1,8 @@
 package leodagdag.play2morphia.test.models;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Reference;
+import com.github.jmkgreen.morphia.annotations.Embedded;
+import com.github.jmkgreen.morphia.annotations.Entity;
+import com.github.jmkgreen.morphia.annotations.Reference;
 import com.google.common.collect.Lists;
 import leodagdag.play2morphia.Model;
 import org.bson.types.ObjectId;

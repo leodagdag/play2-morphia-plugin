@@ -1,6 +1,6 @@
 package leodagdag.play2morphia;
 
-import com.google.code.morphia.annotations.Transient;
+import com.github.jmkgreen.morphia.annotations.Transient;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;

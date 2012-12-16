@@ -1,7 +1,7 @@
 package leodagdag.play2morphia.test.models;
 
-import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Reference;
+import com.github.jmkgreen.morphia.annotations.Embedded;
+import com.github.jmkgreen.morphia.annotations.Reference;
 import com.google.common.collect.Lists;
 
 import java.util.List;

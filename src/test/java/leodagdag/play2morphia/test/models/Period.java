@@ -1,6 +1,6 @@
 package leodagdag.play2morphia.test.models;
 
-import com.google.code.morphia.annotations.*;
+import com.github.jmkgreen.morphia.annotations.*;
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 

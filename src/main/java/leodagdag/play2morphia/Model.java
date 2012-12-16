@@ -1,9 +1,9 @@
 package leodagdag.play2morphia;
 
-import com.google.code.morphia.annotations.Id;
-import com.google.code.morphia.annotations.Transient;
-import com.google.code.morphia.mapping.Mapper;
-import com.google.code.morphia.query.QueryImpl;
+import com.github.jmkgreen.morphia.annotations.Id;
+import com.github.jmkgreen.morphia.annotations.Transient;
+import com.github.jmkgreen.morphia.mapping.Mapper;
+import com.github.jmkgreen.morphia.query.QueryImpl;
 import com.mongodb.gridfs.GridFSDBFile;
 import org.springframework.beans.BeanWrapperImpl;
 import play.Logger;

@@ -1,6 +1,6 @@
 package leodagdag.play2morphia.test.models;
 
-import com.google.code.morphia.annotations.Entity;
+import com.github.jmkgreen.morphia.annotations.Entity;
 import org.bson.types.ObjectId;
 
 /**
