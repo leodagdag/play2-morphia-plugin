@@ -15,6 +15,7 @@ import leodagdag.play2morphia.utils.*;
 import play.Application;
 import play.Configuration;
 import play.Plugin;
+import play.libs.Classpath;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -152,8 +153,8 @@ public class MorphiaPlugin extends Plugin {
     private void mapClasses() throws ClassNotFoundException {
         // Register all models.Class
         Set<String> classes = new HashSet<String>();
-        classes.addAll(application.getTypesAnnotatedWith("models", Entity.class));
-        classes.addAll(application.getTypesAnnotatedWith("models", Embedded.class));
+        classes.addAll(Classpath.getTypesAnnotatedWith(application, "models", Entity.class));
+        classes.addAll(Classpath.getTypesAnnotatedWith(application, "models", Embedded.class));
         for (String clazz : classes) {
             MorphiaLogger.debug("mapping class: %1$s", clazz);
             morphia.map(Class.forName(clazz, true, application.classloader()));
