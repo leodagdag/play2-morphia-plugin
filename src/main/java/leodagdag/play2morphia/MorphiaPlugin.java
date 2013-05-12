@@ -82,7 +82,8 @@ public class MorphiaPlugin extends Plugin {
                 morphia.getMapper().getOptions().objectFactory = new PlayCreator();
             }
             // Configure validator
-            new ValidationExtension(morphia);
+            if (morphiaConf.getBoolean(ConfigKey.VALIDATION.getKey(), true))
+                new ValidationExtension(morphia);
 
             //Check if credentials parameters are present
             String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
