@@ -15,7 +15,7 @@ object Play2MorphiaPluginBuild extends Build {
       publishMavenStyle := true,
       publishTo := Some(githubRepository),
       scalacOptions ++= Seq("-Xlint", "-deprecation", "-unchecked", "-encoding", "utf8"),
-      javacOptions ++= Seq("-source", "1.6", "-encoding", "utf8"),
+      javacOptions ++= Seq("-encoding", "utf8"),
       resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository), //, Resolvers.morphiaRepository),
       checksums := Nil // To prevent proxyToys downloding fails https://github.com/leodagdag/play2-morphia-plugin/issues/11
     )
