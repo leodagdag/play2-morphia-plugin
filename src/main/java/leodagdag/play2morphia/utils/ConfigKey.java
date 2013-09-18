@@ -1,6 +1,7 @@
 package leodagdag.play2morphia.utils;
 
 public enum ConfigKey {
+    DB_MONGOURI("db.mongoURI"), /**/
     DB_SEEDS("db.seeds"), /**/
     DB_HOST("db.host"), /**/
     DB_PORT("db.port"), /**/

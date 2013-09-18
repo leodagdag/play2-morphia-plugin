@@ -66,9 +66,12 @@ public class MorphiaPlugin extends Plugin {
             }
 
             // Connect to MongoDB
+            String mongoURI = morphiaConf.getString(ConfigKey.DB_MONGOURI.getKey());
             String seeds = morphiaConf.getString(ConfigKey.DB_SEEDS.getKey());
 
-            if (StringUtils.isNotBlank(seeds)) {
+            if (StringUtils.isNotBlank(mongoURI)) {
+                mongo = connect(mongoURI);
+            } else if (StringUtils.isNotBlank(seeds)) {
                 mongo = connect(seeds);
             } else {
                 mongo = connect(
@@ -191,6 +194,15 @@ public class MorphiaPlugin extends Plugin {
 
     public static DB db() {
         return ds().getDB();
+    }
+
+    private Mongo connect(MongoURI mongoURI) {
+        try {
+            return new Mongo(mongoURI);
+        }
+        catch(UnknownHostException e) {
+            throw Configuration.root().reportError(ConfigKey.DB_MONGOURI.getKey(), "Cannot connect to mongodb: unknown host", e);
+        }
     }
 
     private Mongo connect(String seeds) {
