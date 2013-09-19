@@ -143,6 +143,7 @@ public class ModelTest extends AbstractTest {
                 manager.role = Role.as(RoleType.GESTIONNAIRE);
                 manager.insert();
                 ObjectId managerId = manager.id;
+                assertThat(Manager.find().countAll()).isEqualTo(1);
 
                 Employee employee = new Employee();
                 employee.username = "bart";
@@ -151,7 +152,7 @@ public class ModelTest extends AbstractTest {
                 employee.role = Role.as(RoleType.EMPLOYEE);
                 employee.manager = manager;
                 employee.insert();
-                assertThat(Employee.find().countAll()).isEqualTo(2);
+                assertThat(Employee.find().countAll()).isEqualTo(1);
 
                 Manager testManager = Manager.find().byId(managerId);
                 testManager.username = "homer";
@@ -159,10 +160,6 @@ public class ModelTest extends AbstractTest {
                 assertThat(Employee.find().byId(employee.id).manager.id).isEqualTo(managerId);
                 assertThat(Employee.find().byId(employee.id).manager.username).isEqualTo(Manager.find().byId(managerId).username);
                 assertThat(Employee.find().byId(employee.id).manager.username).isNotEqualTo(manager.username);
-
-                assertThat(User.find().field("username").equal("bart").countAll()).isEqualTo(1);
-
-
             }
 
             private void createRole() {

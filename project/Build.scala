@@ -38,7 +38,7 @@ object Play2MorphiaPluginBuild extends Build {
         .exclude("org.slf4j", "slf4j-simple")
         .exclude("org.slf4j", "slf4j-jdk14"),
 
-      "play" %% "play-java" % "2.1.0" % "compile"
+      "play" %% "play-java" % "2.1.3" % "compile"
 
 
       /*,
@@ -49,7 +49,7 @@ object Play2MorphiaPluginBuild extends Build {
         .exclude("org.springframework", "spring-core")*/
     )
     val test = Seq(
-      //"play" %% "play-test" % "2.0.4" % "test"
+      "play" %% "play-test" % "2.1.3" % "test"
     )
   }
 
