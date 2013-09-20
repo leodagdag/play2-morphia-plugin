@@ -60,23 +60,34 @@ public class MorphiaPlugin extends Plugin {
 
             MorphiaLogger.debug(morphiaConf);
 
-            String dbName = morphiaConf.getString(ConfigKey.DB_NAME.getKey());
-            if (StringUtils.isBlank(dbName)) {
-                throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing Morphia configuration", null);
-            }
-
-            // Connect to MongoDB
-            String mongoURI = morphiaConf.getString(ConfigKey.DB_MONGOURI.getKey());
+            String mongoURIstr = morphiaConf.getString(ConfigKey.DB_MONGOURI.getKey());
             String seeds = morphiaConf.getString(ConfigKey.DB_SEEDS.getKey());
 
-            if (StringUtils.isNotBlank(mongoURI)) {
+            String dbName = null;
+            String username = null;
+            String password = null;
+            
+            if(StringUtils.isNotBlank(mongoURIstr)) {
+                MongoURI mongoURI = new MongoURI(mongoURIstr);
                 mongo = connect(mongoURI);
+                dbName = mongoURI.getDatabase();
+                username = mongoURI.getUsername();
+                if(mongoURI.getPassword() != null) {
+                    password = new String(mongoURI.getPassword());    
+                }
             } else if (StringUtils.isNotBlank(seeds)) {
                 mongo = connect(seeds);
             } else {
                 mongo = connect(
                         morphiaConf.getString(ConfigKey.DB_HOST.getKey()),
                         morphiaConf.getString(ConfigKey.DB_PORT.getKey()));
+            }
+
+            if (StringUtils.isBlank(dbName)) {
+                dbName = morphiaConf.getString(ConfigKey.DB_NAME.getKey());
+                if (StringUtils.isBlank(dbName)) {
+                    throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing Morphia configuration", null);
+                }
             }
 
             morphia = new Morphia();
@@ -88,8 +99,12 @@ public class MorphiaPlugin extends Plugin {
             new ValidationExtension(morphia);
 
             //Check if credentials parameters are present
-            String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
-            String password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
+            if (StringUtils.isBlank(username)) {
+                username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
+            }
+            if (StringUtils.isBlank(password)) {
+                password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
+            }
 
             if (StringUtils.isNotBlank(username) ^ StringUtils.isNotBlank(password)) {
                 throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing username or password", null);
