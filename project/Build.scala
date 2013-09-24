@@ -16,7 +16,7 @@ object Play2MorphiaPluginBuild extends Build {
       publishTo := Some(dropboxRepository),
       scalacOptions ++= Seq("-Xlint", "-deprecation", "-unchecked", "-encoding", "utf8"),
       javacOptions ++= Seq("-source", "1.6", "-encoding", "utf8"),
-      resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository), //, Resolvers.morphiaRepository),
+      resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository),
       checksums := Nil // To prevent proxyToys downloding fails https://github.com/leodagdag/play2-morphia-plugin/issues/11
     )
   ).settings()
@@ -38,7 +38,7 @@ object Play2MorphiaPluginBuild extends Build {
         .exclude("org.slf4j", "slf4j-jdk14"),
 
       "play" %% "play-java" % "2.1.0" % "provided"
-
+    )
     val test = Seq(
       "play" %% "play-test" % "2.1.0" % "test"
     )
