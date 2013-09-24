@@ -13,7 +13,7 @@ object Play2MorphiaPluginBuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime ++ test,
       publishMavenStyle := true,
-      publishTo := Some(githubRepository),
+      publishTo := Some(dropboxRepository),
       scalacOptions ++= Seq("-Xlint", "-deprecation", "-unchecked", "-encoding", "utf8"),
       javacOptions ++= Seq("-source", "1.6", "-encoding", "utf8"),
       resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository), //, Resolvers.morphiaRepository),
@@ -25,7 +25,6 @@ object Play2MorphiaPluginBuild extends Build {
     val githubRepository = Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.ivyStylePatterns)
     val dropboxRepository = Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)(Resolver.ivyStylePatterns)
     val typesafeRepository = "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
-    //val morphiaRepository = "Morphia Repository" at "http://morphia.googlecode.com/svn/mavenrepo/"
   }
 
   object Dependencies {
@@ -38,24 +37,16 @@ object Play2MorphiaPluginBuild extends Build {
         .exclude("org.slf4j", "slf4j-simple")
         .exclude("org.slf4j", "slf4j-jdk14"),
 
-      "play" %% "play-java" % "2.1.3" % "compile"
+      "play" %% "play-java" % "2.1.0" % "provided"
 
-
-      /*,
-      ("org.springframework"       % "spring-core"           % "3.0.7.RELEASE" % "compile" notTransitive())
-        .exclude("org.springframework", "spring-asm")
-        .exclude("commons-logging", "commons-logging"),
-      ("org.springframework"       % "spring-beans"          % "3.0.7.RELEASE" % "compile" notTransitive())
-        .exclude("org.springframework", "spring-core")*/
-    )
     val test = Seq(
-      "play" %% "play-test" % "2.1.3" % "test"
+      "play" %% "play-test" % "2.1.0" % "test"
     )
   }
 
   object BuildSettings {
     val buildOrganization = "leodagdag"
-    val buildVersion = "0.0.15"
+    val buildVersion = "0.0.15-SNAPSHOT"
     val buildScalaVersion = "2.10.0"
     val buildSbtVersion = "0.12.2"
     val buildSettings = Defaults.defaultSettings ++ Seq(
@@ -64,5 +55,4 @@ object Play2MorphiaPluginBuild extends Build {
       scalaVersion := buildScalaVersion
     )
   }
-
 }
