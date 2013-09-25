@@ -23,7 +23,7 @@ object Play2MorphiaPluginBuild extends Build {
 
   object Resolvers {
     val githubRepository = Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.ivyStylePatterns)
-    val dropboxRepository = Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)(Resolver.ivyStylePatterns)
+    val dropboxRepository = Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)
     val typesafeRepository = "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
   }
 
