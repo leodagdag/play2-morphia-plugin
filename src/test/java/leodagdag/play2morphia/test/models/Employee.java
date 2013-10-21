@@ -1,7 +1,7 @@
 package leodagdag.play2morphia.test.models;
 
-import com.github.jmkgreen.morphia.annotations.Entity;
-import com.github.jmkgreen.morphia.annotations.Reference;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Reference;
 import org.bson.types.ObjectId;
 
 /**

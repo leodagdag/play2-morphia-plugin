@@ -1,7 +1,7 @@
 package leodagdag.play2morphia;
 
-import com.github.jmkgreen.morphia.mapping.Mapper;
-import com.github.jmkgreen.morphia.query.QueryImpl;
+import org.mongodb.morphia.mapping.Mapper;
+import org.mongodb.morphia.query.QueryImpl;
 import java.util.List;
 
 import static leodagdag.play2morphia.MorphiaPlugin.ds;

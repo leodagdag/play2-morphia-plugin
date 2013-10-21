@@ -1,14 +1,14 @@
 package leodagdag.play2morphia;
 
-import com.github.jmkgreen.morphia.AbstractEntityInterceptor;
-import com.github.jmkgreen.morphia.Datastore;
-import com.github.jmkgreen.morphia.Morphia;
-import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.github.jmkgreen.morphia.annotations.Entity;
-import com.github.jmkgreen.morphia.logging.MorphiaLoggerFactory;
-import com.github.jmkgreen.morphia.logging.slf4j.SLF4JLogrImplFactory;
-import com.github.jmkgreen.morphia.mapping.Mapper;
-import com.github.jmkgreen.morphia.validation.ValidationExtension;
+import org.mongodb.morphia.AbstractEntityInterceptor;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.logging.MorphiaLoggerFactory;
+import org.mongodb.morphia.logging.slf4j.SLF4JLogrImplFactory;
+import org.mongodb.morphia.mapping.Mapper;
+import org.mongodb.morphia.ValidationExtension;
 import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.*;

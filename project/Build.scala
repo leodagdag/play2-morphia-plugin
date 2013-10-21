@@ -29,14 +29,10 @@ object Play2MorphiaPluginBuild extends Build {
 
   object Dependencies {
     val runtime = Seq(
-      "com.github.jmkgreen.morphia" % "morphia" % "1.2.2",
-      ("com.github.jmkgreen.morphia" % "morphia-logging-slf4j" % "1.2.2" % "compile" notTransitive())
-        .exclude("org.slf4j", "slf4j-simple")
-        .exclude("org.slf4j", "slf4j-jdk14"),
-      ("com.github.jmkgreen.morphia" % "morphia-validation" % "1.2.2" % "compile" notTransitive())
-        .exclude("org.slf4j", "slf4j-simple")
-        .exclude("org.slf4j", "slf4j-jdk14"),
-
+      "org.mongodb.morphia" % "morphia" % "0.105",
+      "org.mongodb.morphia" % "morphia-logging-slf4j" % "0.105",
+      "org.mongodb.morphia" % "morphia-validation" % "0.105",
+      "org.mongodb" % "mongo-java-driver" % "2.11.0",
       "play" %% "play-java" % "2.1.0" % "provided"
     )
     val test = Seq(

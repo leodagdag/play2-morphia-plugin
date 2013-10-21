@@ -1,6 +1,6 @@
 package leodagdag.play2morphia.test;
 
-import com.github.jmkgreen.morphia.query.Query;
+import org.mongodb.morphia.query.Query;
 import leodagdag.play2morphia.MorphiaPlugin;
 import leodagdag.play2morphia.test.models.*;
 import leodagdag.play2morphia.test.utils.TestConfig;
