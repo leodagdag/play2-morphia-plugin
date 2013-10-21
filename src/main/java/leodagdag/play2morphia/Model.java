@@ -44,14 +44,8 @@ public class Model {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends Model> T update(Object id) {
-        ds().save(this);
-        return (T) this;
-    }
-
-    @SuppressWarnings("unchecked")
     public <T extends Model> T update() {
-        ds().save(this);
+        ds().merge(this);
         return (T) this;
     }
 

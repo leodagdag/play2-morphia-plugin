@@ -13,7 +13,12 @@ object Play2MorphiaPluginBuild extends Build {
     settings = buildSettings ++ Seq(
       libraryDependencies := runtime ++ test,
       publishMavenStyle := true,
-      publishTo := Some(dropboxRepository),
+      publishTo := {
+        if (buildVersion.trim.endsWith("SNAPSHOT"))
+          Some(dropboxSnapshotRepository)
+        else
+          Some(dropboxReleaseRepository)
+      },
       scalacOptions ++= Seq("-Xlint", "-deprecation", "-unchecked", "-encoding", "utf8"),
       javacOptions ++= Seq("-source", "1.6", "-encoding", "utf8"),
       resolvers ++= Seq(DefaultMavenRepository, Resolvers.typesafeRepository),
@@ -23,7 +28,8 @@ object Play2MorphiaPluginBuild extends Build {
 
   object Resolvers {
     val githubRepository = Resolver.file("GitHub Repository", Path.userHome / "dev" / "leodagdag.github.com" / "repository" asFile)(Resolver.ivyStylePatterns)
-    val dropboxRepository = Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" asFile)
+    val dropboxReleaseRepository = Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" / "releases" asFile)
+    val dropboxSnapshotRepository = Resolver.file("Dropbox Repository", Path.userHome / "Dropbox" / "Public" / "repository" / "snapshots" asFile)
     val typesafeRepository = "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
   }
 
