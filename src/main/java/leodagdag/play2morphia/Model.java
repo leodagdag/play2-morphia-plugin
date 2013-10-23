@@ -45,7 +45,7 @@ public class Model {
 
     @SuppressWarnings("unchecked")
     public <T extends Model> T update() {
-        ds().merge(this);
+        ds().save(this);
         return (T) this;
     }
 
