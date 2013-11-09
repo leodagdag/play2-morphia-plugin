@@ -1,9 +1,9 @@
 package leodagdag.play2morphia.test.models;
 
-import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.github.jmkgreen.morphia.annotations.PostLoad;
-import com.github.jmkgreen.morphia.annotations.PrePersist;
-import com.github.jmkgreen.morphia.annotations.Transient;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.PostLoad;
+import org.mongodb.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.Transient;
 import org.joda.time.DateTime;
 
 import java.util.Date;

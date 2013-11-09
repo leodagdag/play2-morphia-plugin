@@ -1,14 +1,14 @@
 package leodagdag.play2morphia;
 
-import com.github.jmkgreen.morphia.AbstractEntityInterceptor;
-import com.github.jmkgreen.morphia.Datastore;
-import com.github.jmkgreen.morphia.Morphia;
-import com.github.jmkgreen.morphia.annotations.Embedded;
-import com.github.jmkgreen.morphia.annotations.Entity;
-import com.github.jmkgreen.morphia.logging.MorphiaLoggerFactory;
-import com.github.jmkgreen.morphia.logging.slf4j.SLF4JLogrImplFactory;
-import com.github.jmkgreen.morphia.mapping.Mapper;
-import com.github.jmkgreen.morphia.validation.ValidationExtension;
+import org.mongodb.morphia.AbstractEntityInterceptor;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.annotations.Embedded;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.logging.MorphiaLoggerFactory;
+import org.mongodb.morphia.logging.slf4j.SLF4JLogrImplFactory;
+import org.mongodb.morphia.mapping.Mapper;
+import org.mongodb.morphia.ValidationExtension;
 import com.mongodb.*;
 import com.mongodb.gridfs.GridFS;
 import leodagdag.play2morphia.utils.*;
@@ -60,20 +60,34 @@ public class MorphiaPlugin extends Plugin {
 
             MorphiaLogger.debug(morphiaConf);
 
-            String dbName = morphiaConf.getString(ConfigKey.DB_NAME.getKey());
-            if (StringUtils.isBlank(dbName)) {
-                throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing Morphia configuration", null);
-            }
-
-            // Connect to MongoDB
+            String mongoURIstr = morphiaConf.getString(ConfigKey.DB_MONGOURI.getKey());
             String seeds = morphiaConf.getString(ConfigKey.DB_SEEDS.getKey());
 
-            if (StringUtils.isNotBlank(seeds)) {
+            String dbName = null;
+            String username = null;
+            String password = null;
+            
+            if(StringUtils.isNotBlank(mongoURIstr)) {
+                MongoURI mongoURI = new MongoURI(mongoURIstr);
+                mongo = connect(mongoURI);
+                dbName = mongoURI.getDatabase();
+                username = mongoURI.getUsername();
+                if(mongoURI.getPassword() != null) {
+                    password = new String(mongoURI.getPassword());    
+                }
+            } else if (StringUtils.isNotBlank(seeds)) {
                 mongo = connect(seeds);
             } else {
                 mongo = connect(
                         morphiaConf.getString(ConfigKey.DB_HOST.getKey()),
                         morphiaConf.getString(ConfigKey.DB_PORT.getKey()));
+            }
+
+            if (StringUtils.isBlank(dbName)) {
+                dbName = morphiaConf.getString(ConfigKey.DB_NAME.getKey());
+                if (StringUtils.isBlank(dbName)) {
+                    throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing Morphia configuration", null);
+                }
             }
 
             morphia = new Morphia();
@@ -85,8 +99,12 @@ public class MorphiaPlugin extends Plugin {
             new ValidationExtension(morphia);
 
             //Check if credentials parameters are present
-            String username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
-            String password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
+            if (StringUtils.isBlank(username)) {
+                username = morphiaConf.getString(ConfigKey.DB_USERNAME.getKey());
+            }
+            if (StringUtils.isBlank(password)) {
+                password = morphiaConf.getString(ConfigKey.DB_PASSWORD.getKey());
+            }
 
             if (StringUtils.isNotBlank(username) ^ StringUtils.isNotBlank(password)) {
                 throw morphiaConf.reportError(ConfigKey.DB_NAME.getKey(), "Missing username or password", null);
@@ -191,6 +209,15 @@ public class MorphiaPlugin extends Plugin {
 
     public static DB db() {
         return ds().getDB();
+    }
+
+    private Mongo connect(MongoURI mongoURI) {
+        try {
+            return new Mongo(mongoURI);
+        }
+        catch(UnknownHostException e) {
+            throw Configuration.root().reportError(ConfigKey.DB_MONGOURI.getKey(), "Cannot connect to mongodb: unknown host", e);
+        }
     }
 
     private Mongo connect(String seeds) {
