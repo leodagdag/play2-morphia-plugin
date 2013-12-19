@@ -121,7 +121,7 @@ public class MorphiaPlugin extends Plugin {
             MorphiaLogger.debug("Datastore [%s] created", dbName);
             // Create GridFS
             String uploadCollection = morphiaConf.getString(ConfigKey.COLLECTION_UPLOADS.getKey());
-            if (StringUtils.isBlank(dbName)) {
+            if (StringUtils.isBlank(uploadCollection)) {
                 uploadCollection = "uploads";
                 MorphiaLogger.warn("Missing Morphia configuration key [%s]. Use default value instead [%s]", ConfigKey.COLLECTION_UPLOADS, "uploads");
             }
